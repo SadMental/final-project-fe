@@ -279,7 +279,7 @@ export default function AccountPayDetail() {
                     <div className="row">
                         <div className="col-sm-3 text-primary">취소 가능 금액</div>
                         <div className="col-sm-9 text-secondary">
-                            {kakaopayInfo.cancel_avilable_amount !== null ? (
+                            {kakaopayInfo.cancel_available_amount !== null ? (
                             <div className="custom-overlay d-flex align-items-center">
                                 {numberWithComma(kakaopayInfo.cancel_available_amount.total)}원
                                 <FaQuestionCircle className="text-primary ms-2"/>

@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import Jumbotron from "../templates/Jumbotron";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 export default function KakaoPay() {
 
@@ -94,9 +94,9 @@ export default function KakaoPay() {
             qty: giftcard.qty
         }));
 
-        console.log("convertList:", convertList);
-
         const { data } = await axios.post("/kakaopay/buy", convertList);
+
+        console.log("data:", data);
         navigate(data.next_redirect_pc_url);
     }, [checkedGiftcardList]);
 
@@ -105,8 +105,11 @@ export default function KakaoPay() {
         <Jumbotron subject="카카오페이 결제" detail="무엇을 살지 정해야 함" />
 
         <div className="row mt-4">
-            <div className="col">
-                <Link to="kakaopay/info">결제 내역 보기</Link>
+            <div className="col-6">
+                <Link to="/kakaopay/pay/info">결제 내역 보기</Link>
+            </div>
+            <div className="col-6">
+                <Link to="/">홈</Link>
             </div>
         </div>
 
