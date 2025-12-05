@@ -6,7 +6,7 @@ import { accessTokenState, clearLoginState, refreshTokenState } from "../jotai";
 const store = getDefaultStore();//store에 set(), get()을 이용
 
 //axios setting
-axios.defaults.baseURL = "http://192.168.20.30:8080";//앞으로 모든 통신에 이 주소를 접두사로 추가
+axios.defaults.baseURL = "http://localhost:8080";//앞으로 모든 통신에 이 주소를 접두사로 추가
 axios.defaults.timeout = 10000;//10000ms초가 넘어가면 통신 취소(상황에 따라 조절)
 
 //axios interceptor
@@ -18,7 +18,6 @@ axios.interceptors.request.use((config)=>{//config는 axios 설정
 
 // - 서버의 응답 헤더에 "Access-Token"이 있으면 axios 헤더와 jotai의 AccessTokenState를 교체
 axios.interceptors.response.use((response) => {
-    console.log("request success");
     const newAccessToken = response.headers["access-token"];//response의 header를 조사 (* 소문자로 작성)
     if(newAccessToken) {//newAccessToken?.length > 0
         axios.defaults.headers.common["Authorization"] = `Bearer ${newAccessToken}`;
@@ -26,8 +25,7 @@ axios.interceptors.response.use((response) => {
         store.set(accessTokenState, newAccessToken);//jotai 갱신 코드 (컴포넌트 외부에서 사용하는 코드)
     }
     return response;
-}, async (error) => {
-    console.log("request fail");
+}, async (error) => {;
     try {
         //console.log(error.response.data?.status);
         //console.log(error.response.data?.message);

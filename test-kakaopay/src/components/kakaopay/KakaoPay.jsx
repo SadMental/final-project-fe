@@ -38,10 +38,10 @@ export default function KakaoPay() {
     const loadData = useCallback(async () => {
         const { data } = await axios.get("/giftcard/");
 
-        const convert = data.map(giftcard => ({
-            ...giftcard,
+        const convert = data.map(g => ({
+            ...g,
             check: false,
-            qty: 1,
+            qty: 1
         }));
         setGiftcardList(convert);
     }, []);
@@ -93,6 +93,9 @@ export default function KakaoPay() {
             no: giftcard.giftcardNo,
             qty: giftcard.qty
         }));
+
+        console.log("convertList:", convertList);
+
         const { data } = await axios.post("/kakaopay/buy", convertList);
         navigate(data.next_redirect_pc_url);
     }, [checkedGiftcardList]);
@@ -100,6 +103,12 @@ export default function KakaoPay() {
     return (<>
 
         <Jumbotron subject="카카오페이 결제" detail="무엇을 살지 정해야 함" />
+
+        <div className="row mt-4">
+            <div className="col">
+                <Link to="kakaopay/info">결제 내역 보기</Link>
+            </div>
+        </div>
 
         <div className="row mt-4">
             <div className="col">

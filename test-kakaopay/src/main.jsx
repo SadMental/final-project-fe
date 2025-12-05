@@ -5,6 +5,7 @@ import App from './App.jsx'
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootswatch/dist/cosmo/bootstrap.min.css";
 import "bootstrap";
+import "./utils/axios"
 
 createRoot(document.getElementById('root')).render(
   
