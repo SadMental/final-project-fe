@@ -9,6 +9,7 @@ import KakaoPayFail from "./kakaopay/KakaoPayFail";
 {/* 카카오페이 결제 내역 */ }
 import AccountPayInformation from "./account/AccountPayInformation";
 import AccountPayDetail from "./account/AccountPayDetail";
+import AccountJoin from "./account/AccountJoin";
 {/* 카카오페이 결제 내역 */ }
 
 
@@ -20,6 +21,9 @@ export default function Content() {
                 <Routes>
                     {/* 메인 페이지 */}
                     {/* <Route path="/" element={<Home/>}></Route> */}
+
+                    {/* 회원 관련 페이지 */}
+                    <Route path="/account/join" element={<AccountJoin/>}></Route>
 
 
                     <Route path="kakaotest" element={<KakaoMapTest />}></Route>
