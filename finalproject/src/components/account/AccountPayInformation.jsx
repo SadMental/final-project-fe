@@ -65,7 +65,7 @@ export default function AccountPayInformation() {
                         <div>거래일시 : {payment.paymentTime}</div>
                         <div>상태 : {calculateStatus(payment)}</div>
                         <div className="mt-2 text-end">
-                            <Link to={`/kakaopay/pay/detail/${payment.paymentNo}`} className="btn btn-info">자세히 보기 <FaArrowRight /></Link>
+                            <Link to={`/kakaopay/pay/detail/${payment.paymentNo}`} className="btn btn-outline-info">자세히 보기 <FaArrowRight /></Link>
                             {/* /kakaopay/pay/detail */}
                         </div>
                     </div>

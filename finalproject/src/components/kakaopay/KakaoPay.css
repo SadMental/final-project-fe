@@ -96,6 +96,7 @@ div {
   inset: 0;
   z-index: 0;
   /* 모든 요소 위로 */
+  
 
   background-image: url("/images/pay-logo.svg");
   background-repeat: round;

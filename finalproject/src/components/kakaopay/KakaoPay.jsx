@@ -189,7 +189,7 @@ export default function KakaoPay() {
 
         <div className="row mt-4">
             <div className="col text-end">
-                <button className="btn btn-lg btn-success" onClick={purchase}
+                <button className="btn btn-lg btn-outline-success" onClick={purchase}
                     disabled={checkedGiftcardList.length === 0}>구매</button>
             </div>
         </div>
