@@ -121,11 +121,11 @@ export default function KakaoPay() {
 
         <Jumbotron subject="카카오페이 결제" detail="무엇을 살지 정해야 함" />
 
-        <div className="row mt-4">
-            <div className="col-6">
+        <div className="row my-4">
+            <div className="col-6 text-center">
                 <Link to="/kakaopay/pay/info" className="none-decortion">결제 내역 보기</Link>
             </div>
-            <div className="col-6">
+            <div className="col-6 text-center">
                 <Link to="/" className="none-decortion">홈</Link>
             </div>
         </div>
@@ -189,7 +189,7 @@ export default function KakaoPay() {
 
         <div className="row mt-4">
             <div className="col text-end">
-                <button className="btn btn-lg btn-success" onClick={purchase}
+                <button className="btn btn-lg btn-outline-success" onClick={purchase}
                     disabled={checkedGiftcardList.length === 0}>구매</button>
             </div>
         </div>

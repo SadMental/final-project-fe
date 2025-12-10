@@ -45,11 +45,11 @@ export default function AccountPayInformation() {
 
         <Jumbotron subject="내 카카오페이 결제 내역" detail=""></Jumbotron>
 
-        <div className="row mt-4">
-            <div className="col-6">
+        <div className="row my-4">
+            <div className="col-6 text-center">
                 <Link to="/kakaopay/buy" className="none-decortion">카카오페이 결제하기</Link>
             </div>
-            <div className="col-6">
+            <div className="col-6 text-center">
                 <Link to="/" className="none-decortion">홈</Link>
             </div>
         </div>
@@ -65,7 +65,7 @@ export default function AccountPayInformation() {
                         <div>거래일시 : {payment.paymentTime}</div>
                         <div>상태 : {calculateStatus(payment)}</div>
                         <div className="mt-2 text-end">
-                            <Link to={`/kakaopay/pay/detail/${payment.paymentNo}`} className="btn btn-info">자세히 보기 <FaArrowRight /></Link>
+                            <Link to={`/kakaopay/pay/detail/${payment.paymentNo}`} className="btn btn-outline-info">자세히 보기 <FaArrowRight /></Link>
                             {/* /kakaopay/pay/detail */}
                         </div>
                     </div>
