@@ -7,6 +7,7 @@ import { FaXmark } from "react-icons/fa6";
 import { toast } from "react-toastify";
 import Swal from "sweetalert2";
 import Jumbotron from "../templates/Jumbotron";
+import { numberWithComma } from "../../utils/format";
 
 export default function AccountPayDetail() {
     const { paymentNo } = useParams();
@@ -25,21 +26,6 @@ export default function AccountPayDetail() {
         setPayment(paymentDto);
         setPaymentDetailList(paymentDetailList);
         setKakaopayInfo(responseVO);
-    }, []);
-
-    const numberWithComma = useCallback((x) => {
-        if (x === null || x === undefined || x === '') {
-            return '';
-        }
-
-        const numString = String(x);
-
-        const parts = numString.split('.');
-        const integerPart = parts[0];
-        const decimalPart = parts.length > 1 ? '.' + parts[1] : '';
-
-        const formattedInteger = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-        return formattedInteger + decimalPart;
     }, []);
 
     const cancelAll = useCallback(async () => {
