@@ -35,7 +35,22 @@ export default function Menu(){
     },[]);
 
     // 로그아웃
-    const logout = useCallback(async(e)=>{});
+    const logout = useCallback(async(e)=>{
+        e.stopPropagation();//더 이상의 이벤트 확산을 금지
+        e.preventDefault();//a태그 기본 동작도 금지
+
+        clearLogin();
+
+        await axios.delete("/account/logout");
+
+        // axios에 설정된 헤더 제거
+        delete axios.defaults.headers.common["Authorization"];
+
+        // 메인페이지로 이동
+        navigate("/");
+
+        closeMenu();
+    });
 
 
     return (

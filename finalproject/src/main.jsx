@@ -12,7 +12,6 @@ import './index.css'
 // axios
 import "./utils/axios"
 
-
 createRoot(document.getElementById('root')).render(
-    <App />
+      <App />
 )
