@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { accessTokenState, adminState, clearLoginState, loginCompleteState, loginIdState, loginLevelState, loginState } from "../utils/jotai";
 import { useCallback, useEffect, useState } from "react";
 import axios from "axios";
+import TermsModal from "./account/accountJoin/TermsModal";
 
 export default function Menu(){
     // 이동 도구
@@ -55,6 +56,8 @@ export default function Menu(){
 
     return (
     <>
+        {/* 모달 */}
+        <TermsModal/>
         <h1>Menu</h1>
         {isLogin === true ? (<>
                             {/* 로그인 시 나와야 하는 화면 */}
