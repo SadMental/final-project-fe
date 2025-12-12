@@ -14,6 +14,9 @@ import AccountPayDetail from "./account/AccountPayDetail";
 import AccountJoin from "./account/accountJoin/AccountJoin";
 import AccountLogin from "./account/accountLogin";
 
+// 고객센터 화면
+import CounselorDashboard from "./dashboard/CounselorDashboard";
+
 
 
 
@@ -25,6 +28,9 @@ export default function Content() {
                 <Routes>
                     {/* 메인 페이지 */}
                     {/* <Route path="/" element={<Home/>}></Route> */}
+
+                    {/* 상담 대기 목록 화면 */}
+                    <Route path="/counselor/dashboard" element={<CounselorDashboard />} />
 
                     {/* 회원 관련 페이지 */}
                     <Route path="/account/join" element={<AccountJoin/>}></Route>
