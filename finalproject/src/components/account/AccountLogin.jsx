@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import Jumbotron from "../templates/Jumbotron";
 import axios from "axios";
 import { accessTokenState, loginIdState, loginLevelState, refreshTokenState } from "../../utils/jotai";
@@ -14,6 +14,13 @@ export default function AccountLogin() {
     const [loginLevel, setLoginLevel] = useAtom(loginLevelState);
     const [accessToken, setAccessToken] = useAtom(accessTokenState);
     const [refreshToken, setRefreshToken] = useAtom(refreshTokenState);
+
+    //effect
+    useEffect(()=>{
+        if(loginId){
+            navigate("/")
+        }
+    }, [loginId]);
 
     //state
     const [account, setAccount] = useState({

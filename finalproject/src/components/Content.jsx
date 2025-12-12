@@ -16,6 +16,7 @@ import AccountLogin from "./account/accountLogin";
 
 // 고객센터 화면
 import CounselorDashboard from "./dashboard/CounselorDashboard";
+import Unauthorized from "./error/Unauthorized";
 
 
 
@@ -50,6 +51,10 @@ export default function Content() {
                     <Route path="/kakaopay/pay/detail" element={<AccountPayDetail />}></Route>
                     <Route path="/kakaopay/pay/detail/:paymentNo" element={<AccountPayDetail />}></Route>
                     {/* 카카오페이 결제 내역 */}
+
+
+                    {/* 에러 페이지 */}
+                    <Route path="/unauthorized" element={<Unauthorized/>}></Route>
                 </Routes>
             </div>
         </div>
