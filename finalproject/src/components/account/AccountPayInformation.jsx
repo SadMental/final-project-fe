@@ -6,19 +6,24 @@ import Jumbotron from "../templates/Jumbotron";
 import "../kakaopay/KakaoPay.css";
 import "./AccountPay.css";
 import { numberWithComma } from "../../utils/format";
+import { useAtomValue } from "jotai";
+import { loginCompleteState } from "../../utils/jotai";
 
 export default function AccountPayInformation() {
     const [paymentList, setPaymentList] = useState([]);
+    const loginComplated = useAtomValue(loginCompleteState);
 
     useEffect(() => {
-        loadData();
-    }, []);
+        if(loginComplated){
+            loadData();
+        }
+    }, [loginComplated]);
 
     const loadData = useCallback(async () => {
 
         const { data } = await axios.get("/payment/account");
         setPaymentList(data);
-    }, []);
+    }, [setPaymentList]);
 
     const calculateStatus = useCallback(payment => {
         const { paymentTotal, paymentRemain } = payment;
