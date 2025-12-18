@@ -16,7 +16,8 @@ export default function ScheduleData() {
         setSelectedDay,
         searchAllRoot,
         sendData,
-        selectedType
+        selectedType,
+        selectedSearch,
     } = useOutletContext();
 
     return (<>
@@ -45,6 +46,7 @@ export default function ScheduleData() {
                         selectedDay={dayKey}
                         markerIds={days[dayKey].markerIds}
                         selectedType={selectedType}
+                        selectedSearch={selectedSearch}
                         routes={routes}
                         markerData={markerData}
                         setDays={setDays}

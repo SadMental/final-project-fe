@@ -1,27 +1,22 @@
-import { Outlet, Route, Routes, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import Reply from "./Reply";
-import Review from "./Review";
+// import Review from "./Review";
 import Schedule from "./Schedule";
 import { useAtomValue } from "jotai";
-import { loginCompleteState, loginIdState } from "../../utils/jotai";
 import { useCallback, useEffect, useState } from "react";
 import { FaLink } from "react-icons/fa";
 import { toast } from "react-toastify";
 import axios from "axios";
 import KakaoLoader from "../kakaomap/useKakaoLoader";
-import { DndProvider } from "react-dnd";
-import { HTML5Backend } from "react-dnd-html5-backend";
-import { FaPlus } from "react-icons/fa6";
 import { Map, MapMarker, Polyline } from "react-kakao-maps-sdk";
-import MarkerListSection from "../dnd/MarkerListSection";
 import { v4 as uuidv4 } from "uuid";
+import { loginIdState } from "../../utils/jotai";
 
 
 
 export default function SchedulePage() {
     KakaoLoader()
 
-    const loginComplated = useAtomValue(loginCompleteState);
     const accountId = useAtomValue(loginIdState);
     const [memberList, setMemberList] = useState([]);
     const [days, setDays] = useState({
@@ -104,6 +99,12 @@ export default function SchedulePage() {
          */
     ])
 
+    const PRIORITY_COLORS = {
+        RECOMMEND: "#0052FF",
+        TIME: "#FF2D2D",
+        DISTANCE: "#00B050"
+    };
+
     const { scheduleNo } = useParams();
 
     const copyUrl = useCallback(() => {
@@ -160,7 +161,7 @@ export default function SchedulePage() {
                 content: ""
             }
         }));
-    }, [days, selectedDay, searchList]);
+    }, [days, selectedDay]);
 
     const addTempMarker = useCallback((latlng) => {
         setTempMarker(prev => ([
@@ -252,9 +253,9 @@ export default function SchedulePage() {
             return newMarkerData;
         });
 
-    }, [days, selectedDay, setDays, setMarkerData]);
+    }, [days, setDays, setMarkerData]);
 
-    const markerElements = useCallback(e => {
+    const markerElements = useCallback(() => {
         return (days[selectedDay].markerIds?.map(id => (
             <MapMarker
                 key={id}
@@ -287,7 +288,7 @@ export default function SchedulePage() {
         )));
     }, [markerData, selectedDay, days]);
 
-    const tempMarkerElements = useCallback(e => {
+    const tempMarkerElements = useCallback(() => {
         const handleMarkerClick = (clickedMarker) => {
             // 1. addMarker 함수 호출을 위한 customLatLng 객체 생성
             const customLatLng = {
@@ -312,10 +313,10 @@ export default function SchedulePage() {
             <MapMarker
                 key={index}
                 position={{ lng: marker.x, lat: marker.y }}
-                onClick={e => handleMarkerClick(marker)}
+                onClick={() => handleMarkerClick(marker)}
             />
         )));
-    }, [tempMarker, markerData]);
+    }, [tempMarker, addMarker]);
 
     const polylineElements = useCallback(() => {
         return (
@@ -441,7 +442,7 @@ export default function SchedulePage() {
     }, [days, markerData]);
 
     // 주소 검색
-    const addMarkerForSearch = useCallback(async (e) => {
+    const addMarkerForSearch = useCallback(async () => {
         setSearchList([]);
         const { data } = await axios.post("/kakaoMap/searchAddress", searchData);
         // const {documents} = data;
@@ -462,11 +463,11 @@ export default function SchedulePage() {
                 }
             ]))
         })
-    }, [days, selectedDay, searchData]);
+    }, [searchData]);
 
     const selectType = useCallback(e => {
         const { name } = e.target;
-        setSelectedType(prev => ({
+        setSelectedType(() => ({
             [name]: true
         }))
     }, [])
@@ -476,7 +477,7 @@ export default function SchedulePage() {
         setSelectedSearch(name)
     }, [])
 
-    const sendData = useCallback(async (e) => {
+    const sendData = useCallback(async () => {
         const payload = { 
             data: { 
                 days: days, 
@@ -486,15 +487,9 @@ export default function SchedulePage() {
         };
         const { data } = await axios.post("/kakaoMap/insertData", payload)
         console.log(data);
-    }, [days, markerData])
+    }, [days, markerData, scheduleNo])
 
-    const PRIORITY_COLORS = {
-        "RECOMMEND": "#0052FF",
-        "TIME": "#FF2D2D",
-        "DISTANCE": "#00B050"
-    };
-
-    const loadData = useCallback(async (e) => {
+    const loadData = useCallback(async () => {
         const { data } = await axios.get(`/schedule/detail/${scheduleNo}`)
         console.log(data);
         setDays(data.days);
@@ -542,11 +537,11 @@ export default function SchedulePage() {
         }
 
         loadMember();
-    }, []);
+    }, [scheduleNo]);
 
-    useEffect(e => {
+    useEffect(() => {
         loadData();
-    }, [])
+    }, [loadData])
 
     const currentDayData = days[selectedDay] || { markerIds: [], routes: [] }; // 데이터가 없으면 빈 배열 반환
 
