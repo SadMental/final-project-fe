@@ -102,10 +102,22 @@ export default function AccountPayInformation() {
 
                     {/* 가운데 4줄 (왼쪽으로 밀착) */}
                     <div className="d-flex flex-column gap-1 text-smallSize ms-3">
-                        <div>거래금액 : 총 {numberWithComma(payment.paymentTotal)}원</div>
-                        <div>거래번호 : {payment.paymentTid}</div>
-                        <div>거래일시 : {formatDateTime(payment.paymentTime)}</div>
-                        <div className={`text-${statusTextColor(payment)}`}>상태 : {calculateStatus(payment)}</div>
+                        <div className="row">
+                            <div className="col-sm-4 text-primary">거래금액</div>
+                            <div className="col-sm-8 text-secondary">총 {numberWithComma(payment.paymentTotal)}원</div>
+                        </div>
+                        <div className="row">
+                            <div className="col-sm-4 text-primary">거래번호</div>
+                            <div className="col-sm-8 text-secondary">{payment.paymentTid}</div>
+                        </div>
+                        <div className="row">
+                            <div className="col-sm-4 text-primary">거래일시</div>
+                            <div className="col-sm-8 text-secondary">{formatDateTime(payment.paymentTime)}</div>
+                        </div>
+                        <div className="row">
+                            <div className="col-sm-4 text-primary">상태</div>
+                            <div className={`col-sm-8 text-${statusTextColor(payment)}`}>{calculateStatus(payment)}</div>
+                        </div>
                     </div>
 
                     {/* 오른쪽 버튼 (끝으로 밀기) */}
