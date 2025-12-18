@@ -47,6 +47,17 @@ export default function ChatSocket({ isChatOpen, onChatClose, currentChatNo }) {
         });
     }, [chatNo, setMessagesByChatId]);
 
+    // 날짜 포맷 함수 (오전/오후 00:00 형식)
+    const formatTime = (dateString) => {
+        if (!dateString) return "";
+        const date = new Date(dateString);
+        return date.toLocaleTimeString('ko-KR', {
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: true
+        });
+    };
+
     const handleSend = useCallback(() => {
         console.log("handleSend 호출됨");
         if (client && wsConnectionState === 'connected' && input.trim() !== '') {
