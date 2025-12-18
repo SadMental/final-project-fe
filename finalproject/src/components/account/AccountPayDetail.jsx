@@ -19,7 +19,7 @@ export default function AccountPayDetail() {
     const [kakaopayInfo, setKakaopayInfo] = useState(null);
     const loginComplete = useAtomValue(loginCompleteState);
 
-    useEffect(() => { 
+    useEffect(() => {
         if (loginComplete === true) {
             loadData();
         }
@@ -56,7 +56,7 @@ export default function AccountPayDetail() {
 
     const cancelUnit = useCallback(async (paymentDetail) => {
 
-         const choice = await confirm({
+        const choice = await confirm({
             title: "해당 아이템을 환불하시겠습니까?",
             text: "환불은 돌이킬 수 없습니다.",
             icon: "error",
@@ -66,7 +66,7 @@ export default function AccountPayDetail() {
             cancelText: "취소",
         });
 
-        if (choice.isConfirmed === false) 
+        if (choice.isConfirmed === false)
             return;
 
         await axios.delete(`/payment/detail/${paymentDetail.paymentDetailNo}`);
@@ -78,7 +78,7 @@ export default function AccountPayDetail() {
     // 환불 가능 여부는 payment_detail은 모르고 payment만 아니 부모가 환불 여부를 결정해준다
     const location = useLocation();
     const { isRefund } = location.state || {};
-    
+
     //return
     return (<>
 
@@ -96,64 +96,65 @@ export default function AccountPayDetail() {
             </div>
         </div>
 
+
         <div
-            className="fade-label"
+            className="fade-item"
             style={{ animationDelay: `${0.03}s` }}
         >
-            <h2 className="mt-5">결제 정보</h2>
-        </div>
+            <div className="p-4 shadow rounded d-flex align-items-center">
 
-        <div className="row mt-4">
-            <div className="col">
+                {/* 왼쪽 제목 (고정 폭) */}
+                <div className="fw-bold" style={{ width: 220 }}>
+                    결제정보
+                </div>
+
+                {/* 가운데 4줄 (왼쪽으로 밀착) */}
                 {payment === null ? (
-                    <h3>결제 정보 Loading</h3>
+                    <h3>Loading...</h3>
                 ) : (
 
                     <>
 
-                        <div
-                            className="fade-item"
-                            style={{ animationDelay: `${0.03}s` }}
-                        >
-                            <div className="d-flex justify-content-between align-items-center">
-                                {/* 왼쪽 정보들 */}
-                                <div style={{ flex: 1 }}>
-                                    <div className="row">
-                                        <div className="col-sm-3 text-primary">결제번호</div>
-                                        <div className="col-sm-9 text-secondary">{payment.paymentNo}</div>
-                                    </div>
-                                    <div className="row">
-                                        <div className="col-sm-3 text-primary">거래번호</div>
-                                        <div className="col-sm-9 text-secondary">{payment.paymentTid}</div>
-                                    </div>
-                                    <div className="row">
-                                        <div className="col-sm-3 text-primary">구매상품명</div>
-                                        <div className="col-sm-9 text-secondary">{payment.paymentName}</div>
-                                    </div>
-                                    <div className="row">
-                                        <div className="col-sm-3 text-primary">구매금액</div>
-                                        <div className="col-sm-9 text-secondary">
-                                            {numberWithComma(payment.paymentTotal)}원
-                                        </div>
+                        <div className="d-flex justify-content-between align-items-center">
+                            {/* 왼쪽 정보들 */}
+                            <div style={{ flex: 1 }}>
+                                <div className="row">
+                                    <div className="col-sm-4 text-primary" style={{ fontSize: "0.8em" }}>결제번호</div>
+                                    <div className="col-sm-8 text-secondary">{payment.paymentNo}</div>
+                                </div>
+                                <div className="row">
+                                    <div className="col-sm-4 text-primary" style={{ fontSize: "0.8em" }}>거래번호</div>
+                                    <div className="col-sm-8 text-secondary">{payment.paymentTid}</div>
+                                </div>
+                                <div className="row">
+                                    <div className="col-sm-4 text-primary" style={{ fontSize: "0.8em" }}>구매상품명</div>
+                                    <div className="col-sm-8 text-secondary" style={{ fontSize: "0.7em" }}>{payment.paymentName}</div>
+                                </div>
+                                <div className="row">
+                                    <div className="col-sm-4 text-primary" style={{ fontSize: "0.8em" }}>구매금액</div>
+                                    <div className="col-sm-8 text-secondary">
+                                        {numberWithComma(payment.paymentTotal)}원
                                     </div>
                                 </div>
+                            </div>
+                        </div>
 
-                                {/* 오른쪽 cancel 버튼 */}
-                                {(
-                                    <div>
-                                        <button className={`btn btn-outline-${payment.paymentRemain !== 0 ? "danger" : "secondary"} ms-3`} onClick={cancelAll}
+
+                    </>
+
+                )}
+
+                {/* 오른쪽 버튼 (끝으로 밀기) */}
+                <div className="ms-auto">
+                   <button className={`btn btn-outline-${payment.paymentRemain !== 0 ? "danger" : "secondary"} ms-3`} onClick={cancelAll}
                                             disabled={isRefund === false || payment.paymentRemain === 0}>
                                             <FaXmark />
                                             <span>전체 환불</span>
                                         </button>
-                                    </div>
-                                )}
-                            </div>
-                        </div>
-                    </>
+                </div>
 
-                )}
             </div>
+
         </div>
 
         <hr className="my-3" />
