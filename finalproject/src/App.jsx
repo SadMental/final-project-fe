@@ -4,6 +4,9 @@ import Menu from "./components/Menu"
 import Footer from "./components/Footer"
 import Content from "./components/Content"
 
+const MINT_COLOR = "#78C2AD";
+const MINT_HOVER = "#63b099";
+
 
 // Jotai 개발자 도구 설정
 import "jotai-devtools/styles.css"; // 디자인

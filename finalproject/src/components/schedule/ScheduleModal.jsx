@@ -3,25 +3,25 @@ import axios from "axios";
 import dayjs from "dayjs";
 import 'dayjs/locale/ko';
 import { useAtomValue } from "jotai";
-import { loginIdState } from "../../utils/jotai";
+import { accessTokenState, loginIdState, loginState } from "../../utils/jotai";
 
 const MINT_COLOR = "#78C2AD";
 
 export default function ScheduleModal({ isOpen, onClose }) {
-    // jotai state
+    //jotai state
     const loginId = useAtomValue(loginIdState);
+    const isLogin = useAtomValue(loginState);
+    const accessToken = useAtomValue(accessTokenState);
 
-    // 1. 상태 관리
+
     const [scheduleName, setScheduleName] = useState("");
     const [startDate, setStartDate] = useState(dayjs().format("YYYY-MM-DDTHH:mm"));
     const [endDate, setEndDate] = useState(dayjs().format("YYYY-MM-DDTHH:mm"));
     const [checked, setChecked] = useState(false);
     
-    // 태그 관련
     const [tags, setTags] = useState([]);
-    const [selectTag, setSelectTag] = useState([]);
+    const [selectTag, setSelectTag] = useState([]); // 태그 '이름'들을 담습니다.
 
-    // 2. 모달 초기화
     useEffect(() => {
         if (isOpen) {
             setScheduleName("");
@@ -29,43 +29,50 @@ export default function ScheduleModal({ isOpen, onClose }) {
             setEndDate(dayjs().format("YYYY-MM-DDTHH:mm"));
             setChecked(false);
             setSelectTag([]);
-            
             loadTags();
         }
     }, [isOpen]);
 
     const loadTags = async () => {
         try {
-            const { data } = await axios.get("/schedule/tagList");
+            const { data } = await axios.get("http://localhost:8080/schedule/tagList");
             setTags(data);
         } catch (e) {
             console.error("태그 로드 실패", e);
         }
     };
 
-    const tagCheck = useCallback((tagNo) => {
+    // [수정] 태그 선택 핸들러: '번호'가 아니라 '이름(tagName)'을 저장합니다.
+    const tagCheck = useCallback((tagName) => {
         setSelectTag(prev => 
-            prev.includes(tagNo) ? prev.filter(t => t !== tagNo) : [...prev, tagNo]
+            prev.includes(tagName) ? prev.filter(t => t !== tagName) : [...prev, tagName]
         );
     }, []);
 
     const categories = Array.from(new Set(tags.map(t => t.tagCategory)));
 
-    // 3. 등록 핸들러 (코드가 훨씬 간단해짐!)
     const sendData = useCallback(async () => {
+        // 로그인 상태가 아니라면 차단
+        if(!isLogin || !loginId){
+            alert("로그인 정보가 유효하지 않습니다");
+            onclose();
+            return;
+        }
+
         if (!scheduleName) return alert("일정 제목을 입력해주세요.");
 
         const data = {
             scheduleName: scheduleName,
-            scheduleOwner: loginId, // Jotai 값 사용
-            scheduleStartDate: dayjs(startDate).format("YYYY-MM-DDTHH:mm:ss"),
+            scheduleOwner: loginId,
+            scheduleStartDate: dayjs(startDate).format("YYYY-MM-DDTHH:mm:ss"), // 백엔드 필드명 일치
             scheduleEndDate: checked ? dayjs(endDate).format("YYYY-MM-DDTHH:mm:ss") : dayjs(startDate).format("YYYY-MM-DDTHH:mm:ss"),
+            
+            // [확인] 백엔드 VO는 tagNoList라고 되어있지만, 실제로는 List<String> 타입으로 이름을 받습니다.
             tagNoList: selectTag 
         };
 
         try {
-            // ★ [핵심] 토큰 꺼내고 헤더 넣는 코드 삭제! -> 그냥 보내면 됨
-            await axios.post("/schedule/insert", data);
+            await axios.post("http://localhost:8080/schedule/insert", data);
             
             alert(`[${data.scheduleName}] 일정이 등록되었습니다!`);
             onClose(); 
@@ -73,7 +80,7 @@ export default function ScheduleModal({ isOpen, onClose }) {
             console.error("등록 에러:", error);
             alert("일정 등록이 실패되었습니다.");
         }
-    }, [scheduleName, startDate, endDate, checked, selectTag, onClose, loginId]); // token 의존성 제거됨
+    }, [scheduleName, startDate, endDate, checked, selectTag, onClose, isLogin, loginId]);
 
     if (!isOpen) return null;
 
@@ -90,7 +97,6 @@ export default function ScheduleModal({ isOpen, onClose }) {
                         </div>
 
                         <div className="modal-body p-4">
-                            {/* 제목 입력 */}
                             <div className="mb-4">
                                 <label className="form-label fw-bold small text-muted">일정 제목</label>
                                 <input
@@ -101,7 +107,6 @@ export default function ScheduleModal({ isOpen, onClose }) {
                                 />
                             </div>
 
-                            {/* 날짜 선택 */}
                             <div className="row mb-4">
                                 <div className="col-md-6">
                                     <label className="form-label fw-bold small text-muted">시작일</label>
@@ -134,7 +139,6 @@ export default function ScheduleModal({ isOpen, onClose }) {
 
                             <hr className="my-4 text-muted opacity-25" />
 
-                            {/* 태그 선택 */}
                             <div>
                                 <h5 className="fw-bold mb-3" style={{fontSize:"1.1rem"}}>어떤 스타일의 일정인가요?</h5>
                                 {categories.map((category, index) => {
@@ -146,16 +150,17 @@ export default function ScheduleModal({ isOpen, onClose }) {
                                                 {categoryTags.map((tag) => (
                                                     <button
                                                         key={tag.tagNo} type="button"
-                                                        onClick={() => tagCheck(tag.tagNo)}
+                                                        // [수정] tag.tagName을 넘깁니다.
+                                                        onClick={() => tagCheck(tag.tagName)}
                                                         className={`btn btn-sm rounded-pill px-3 fw-bold transition-all ${
-                                                            selectTag.includes(tag.tagNo) 
+                                                            selectTag.includes(tag.tagName) // 이름으로 비교
                                                             ? "text-white shadow-sm" 
                                                             : "btn-outline-secondary border-0 bg-light text-secondary"
                                                         }`}
                                                         style={{
-                                                            backgroundColor: selectTag.includes(tag.tagNo) ? MINT_COLOR : undefined,
-                                                            borderColor: selectTag.includes(tag.tagNo) ? MINT_COLOR : undefined,
-                                                            transform: selectTag.includes(tag.tagNo) ? "scale(1.05)" : "scale(1)",
+                                                            backgroundColor: selectTag.includes(tag.tagName) ? MINT_COLOR : undefined,
+                                                            borderColor: selectTag.includes(tag.tagName) ? MINT_COLOR : undefined,
+                                                            transform: selectTag.includes(tag.tagName) ? "scale(1.05)" : "scale(1)",
                                                             transition: "all 0.2s ease"
                                                         }}
                                                     >
