@@ -2,7 +2,7 @@ import { useCallback } from "react";
 // import update from "immutability-helper";
 import { Marker } from "./Marker";
 
-export default function MarkerListSection({ markerIds, routes, markerData, setDays, setMarkerData, selectedDay, selectedType, removeMarker }) {
+export default function MarkerListSection({ markerIds, routes, markerData, setDays, setMarkerData, selectedDay, selectedType, selectedSearch, removeMarker }) {
     // id로 마커 찾기
     const findMarker = useCallback((id) => {
         const index = markerIds.indexOf(id);
@@ -52,7 +52,6 @@ export default function MarkerListSection({ markerIds, routes, markerData, setDa
 
     const changeStrValue = useCallback((e, id) => {
         const { name, value } = e.target;
-        // console.log(`name = ${name} || value = ${value} || id = ${id}`);
         setMarkerData(prev => ({
             ...prev,
             [id]: {
@@ -60,7 +59,7 @@ export default function MarkerListSection({ markerIds, routes, markerData, setDa
                 [name]: value
             }
         }));
-    }, [])
+    }, [setMarkerData])
 
 
     // 리스트 렌더링 (여기가 DnD가 작동하는 영역)
@@ -73,19 +72,19 @@ export default function MarkerListSection({ markerIds, routes, markerData, setDa
 
         const durationForMarker = {
             prev: prevKey
-                ? routes.find(route => route.routeKey === prevKey && selectedType[route.priority])?.duration
+                ? routes.find(route => route.routeKey === prevKey && selectedType[route.priority] && route.type === selectedSearch)?.duration
                 : null,
             next: nextKey
-                ? routes.find(route => route.routeKey === nextKey && selectedType[route.priority])?.duration
+                ? routes.find(route => route.routeKey === nextKey && selectedType[route.priority] && route.type === selectedSearch)?.duration
                 : null,
         };
 
         const distanceForMarker = {
             prev: prevKey
-                ? routes.find(route => route.routeKey === prevKey && selectedType[route.priority])?.distance
+                ? routes.find(route => route.routeKey === prevKey && selectedType[route.priority] && route.type === selectedSearch)?.distance
                 : null,
             next: nextKey
-                ? routes.find(route => route.routeKey === nextKey && selectedType[route.priority])?.distance
+                ? routes.find(route => route.routeKey === nextKey && selectedType[route.priority] && route.type === selectedSearch)?.distance
                 : null,
         };
         return (<Marker
