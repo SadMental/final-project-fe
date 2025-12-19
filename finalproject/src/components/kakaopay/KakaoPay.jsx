@@ -246,7 +246,7 @@ export default function KakaoPay() {
             {checkedShopList.map((checkedShop, index) => (
                 <div className="row">
                     <div className="col text-center">
-                        {checkedShop.shopName} X {checkedShop.qty}개 = {numberWithComma(checkedShop.shopPrice)}원
+                        {checkedShop.shopName} X {checkedShop.qty}개 = {numberWithComma(checkedShop.shopPrice * checkedShop.qty)}원
                     </div>
                 </div>
             ))}
