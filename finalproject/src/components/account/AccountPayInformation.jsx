@@ -131,21 +131,6 @@ export default function AccountPayInformation() {
             </div>
         </div>
 
-        {/* <div
-            className="fade-link"
-            style={{ animationDelay: `${0.03}s` }}
-        >
-            <div className="row my-4">
-                <div className="col-6 text-center">
-                    <Link to="/kakaopay/buy" className="none-decortion">카카오페이 결제하기</Link>
-                </div>
-                <div className="col-6 text-center">
-                    <Link to="/" className="none-decortion">홈</Link>
-                </div>
-            </div>
-        </div> */}
-
-
         <hr className="mt-5" />
 
         <div
