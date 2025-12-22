@@ -24,6 +24,7 @@ export default function SchedulePage() {
     const loginId = useAtomValue(loginIdState);
 
 
+    const [isLoading, setIsLoading] = useState(true);
     const accountId = useAtomValue(loginIdState);
     const [memberList, setMemberList] = useState([]);
     const [days, setDays] = useState({
@@ -109,6 +110,7 @@ export default function SchedulePage() {
         scheduleState: "",
         scheduleNo: scheduleNo
     })
+    const isOwner = !isLoading && scheduleDto.scheduleOwner === loginId;
 
 
     useEffect(() => {
@@ -123,6 +125,7 @@ export default function SchedulePage() {
 
     // Marker 추가
     const addMarker = useCallback(async (latlng) => {
+        if (!isOwner) return;
         const id = uuidv4();
         const address = { x: latlng.getLng(), y: latlng.getLat() };
 
@@ -150,6 +153,7 @@ export default function SchedulePage() {
     }, [days, selectedDay]);
 
     const addTempMarker = useCallback((latlng) => {
+        if (!isOwner) return;
         setTempMarker(prev => ([
             ...prev,
             {
@@ -161,6 +165,7 @@ export default function SchedulePage() {
 
 
     const addDays = useCallback(() => {
+        if (!isOwner) return;
         const currentDayKeys = Object.keys(days).map(Number);
         const nextDay = currentDayKeys.length > 0 ? Math.max(...currentDayKeys) + 1 : 1;
 
@@ -178,6 +183,7 @@ export default function SchedulePage() {
     }, [days]);
 
     const removeMarker = useCallback((dayKey, id) => {
+        if (!isOwner) return;
         setDays(prevDays => {
             const targetDay = prevDays[dayKey];
             if (!targetDay) return prevDays;
@@ -259,6 +265,7 @@ export default function SchedulePage() {
     }, [markerData, selectedDay, days]);
 
     const tempMarkerElements = useCallback(() => {
+        if (!isOwner) return;
         const handleMarkerClick = (clickedMarker) => {
             // 1. addMarker 함수 호출을 위한 customLatLng 객체 생성
             const customLatLng = {
@@ -442,6 +449,7 @@ export default function SchedulePage() {
     }, [days, markerData, selectedSearch, selectedType]);
     // 주소 검색
     const addMarkerForSearch = useCallback(async () => {
+        if (!isOwner) return;
         setSearchList([]);
         const { data } = await axios.post("/kakaoMap/searchAddress", searchData);
         // const {documents} = data;
@@ -477,6 +485,7 @@ export default function SchedulePage() {
     }, [])
 
     const sendData = useCallback(async () => {
+        if (!isOwner) return;
         const payload = {
             data: {
                 days: days,
@@ -497,11 +506,13 @@ export default function SchedulePage() {
         }));
     }, [days, markerData, scheduleDto])
 
+    const routeHistory = useRef({});
+
     const loadData = useCallback(async () => {
         console.log("loadData called with scheduleNo =", scheduleNo);
-
+        console.log("owner? ", isOwner);
         if (!scheduleNo) return;
-
+        setIsLoading(true);
         try {
             const response = await axios.post(`/schedule/detail`, scheduleDto);
             const wrapper = response.data; // ScheduleInsertDataWrapperVO 객체
@@ -522,7 +533,7 @@ export default function SchedulePage() {
 
                     const currentOrderKey = markerIds.join(","); // 현재 순서 지문
                     const routesMap = dayObj.routes; // { CAR: { RECOMMEND: [...] }, WALK: {...} }
-
+                    console.log(routesMap)
                     if (routesMap) {
                         Object.keys(routesMap).forEach(mode => {
                             const priorities = routesMap[mode];
@@ -558,6 +569,8 @@ export default function SchedulePage() {
         } catch (error) {
             console.error("데이터 로드 중 오류 발생:", error);
             toast.error("일정을 불러오는 데 실패했습니다.");
+        } finally {
+            setIsLoading(false);
         }
     }, [scheduleNo, scheduleDto]); // scheduleDto 추가 (보통 axios 호출 시 사용하므로)
 
@@ -682,7 +695,8 @@ export default function SchedulePage() {
         selectType,
         selectSearch,
         sendData,
-        scheduleDto
+        scheduleDto,
+        isOwner
     };
 
     const toggleSchedulePublicWithSwal = async () => {
@@ -769,6 +783,11 @@ export default function SchedulePage() {
 
     const isEnded = scheduleDto.scheduleState === "종료";
     const isPublic = !!scheduleDto.schedulePublic;
+
+    if (isLoading) {
+        return <div className="text-center py-5">일정 데이터를 불러오는 중입니다...</div>;
+    }
+
     return (
         <>
             <div className="container-fluid px-3 py-3 schedule-page">
@@ -781,29 +800,31 @@ export default function SchedulePage() {
                         <div className="panel-card h-100">
 
                             {/* 상단 액션/정보 바 */}
-                            <div className="panel-topbar">
-                                {!canTogglePublic && (
-                                    <div className="text-muted small mt-1">
-                                        약속 종료 후 공개 전환 가능
-                                    </div>
-                                )}
-                                <button
-                                    type="button"
-                                    className={`btn ${scheduleDto.schedulePublic ? "btn-success" : "btn-outline-secondary"} btn-sm`}
-                                    onClick={toggleSchedulePublicWithSwal} disabled={!canTogglePublic}
 
-                                >
-                                    {scheduleDto.schedulePublic ? "공개" : "비공개"}
-                                </button>
+                            {isOwner && (
+                                <div className="panel-topbar">
+                                    {!canTogglePublic && (
+                                        <div className="text-muted small mt-1">
+                                            약속 종료 후 공개 전환 가능
+                                        </div>
+                                    )}
+                                    <button
+                                        type="button"
+                                        className={`btn ${scheduleDto.schedulePublic ? "btn-success" : "btn-outline-secondary"} btn-sm`}
+                                        onClick={toggleSchedulePublicWithSwal} disabled={!canTogglePublic}
 
-
-                                {!guest && (
-                                    <button type="button" className="btn btn-outline-secondary btn-sm" onClick={copyUrl}>
-                                        <FaLink className="me-1" />
-                                        공유
+                                    >
+                                        {scheduleDto.schedulePublic ? "공개" : "비공개"}
                                     </button>
-                                )}
-                            </div>
+
+                                    {!guest && (
+                                        <button type="button" className="btn btn-outline-secondary btn-sm" onClick={copyUrl}>
+                                            <FaLink className="me-1" />
+                                            공유
+                                        </button>
+                                    )}
+                                </div>
+                            )}
 
                             {/* 참여자 */}
                             <div className="panel-members">
@@ -839,7 +860,9 @@ export default function SchedulePage() {
                                 className="map-info"
                                 center={center}
                                 level={3}
-                                onClick={(_, mouseEvent) => addMarker(mouseEvent.latLng)}
+
+                                onClick={(_, mouseEvent) => isOwner && addMarker(mouseEvent.latLng)}
+
                             >
                                 {markerElements()}
                                 {tempMarkerElements()}
@@ -854,6 +877,7 @@ export default function SchedulePage() {
                 <div className="row mt-3">
                     <div className="col-12">
                         <div className="reply-card-wrap">
+
                             {isBeforeOrOngoing && (
                                 <Reply
                                     reviews={comments}
