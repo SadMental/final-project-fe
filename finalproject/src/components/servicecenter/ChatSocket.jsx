@@ -89,7 +89,7 @@ export default function ChatSocket({ isChatOpen, onChatClose, currentChatNo }) {
 
     const checkParty = useCallback(async () => {
         try {
-            const { data } = await axios.post("http://192.168.20.16:8080/chat/check", { chatNo: chatNo });
+            const { data } = await axios.post("/api/chat/check", { chatNo: chatNo });
 
             if (data.result === false) {
                 setCheckComplete(false);
@@ -105,7 +105,7 @@ export default function ChatSocket({ isChatOpen, onChatClose, currentChatNo }) {
     }, [chatNo]);
 
     const loadHistory = useCallback(async () => {
-        const  {data} =await axios.get(`/message/messageOrigin/${chatNo}`);
+        const  {data} =await axios.get(`/api/message/messageOrigin/${chatNo}`);
         setHistory(data.message);
         setLast(data.last);
         console.log("1");
@@ -113,7 +113,7 @@ export default function ChatSocket({ isChatOpen, onChatClose, currentChatNo }) {
     const loadMoreHistory = useCallback(async ()=>{
         const lastMessage = history.at(-1);
         console.log(lastMessage);
-        const {data} = await axios.get(`/message/messageOrigin/${chatNo}/messageNo/${lastMessage.messageNo}`)
+        const {data} = await axios.get(`/api/message/messageOrigin/${chatNo}/messageNo/${lastMessage.messageNo}`)
         setHistory(prev=>[...prev, ...data.message]);
         setLast(data.last);
         moveScrollBottom();

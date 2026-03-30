@@ -39,7 +39,7 @@ export default function AccountPayInformation() {
 
         loading.current = true;
 
-        const response = await axios.get(`/payment/page/${page}`);
+        const response = await axios.get(`/api/payment/page/${page}`);
         if (page === 1) {
             setPaymentList(response.data.list);
         }

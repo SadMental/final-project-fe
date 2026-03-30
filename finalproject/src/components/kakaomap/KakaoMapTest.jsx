@@ -110,7 +110,7 @@ export default function KakaoMapTest() {
             y: latlng.getLat(),
         }
 
-        const { data } = await axios.post("/kakaoMap/getAddress", address);
+        const { data } = await axios.post("/api/kakaoMap/getAddress", address);
         const addressName = data.documents.map(({ address, road_address }) => {
             if (road_address === null) {
                 return address.address_name;
@@ -158,7 +158,7 @@ export default function KakaoMapTest() {
     const addMarkerForSearch = useCallback(async (e) => {
         setSearchList([]);
         console.log("addMarkerForSearch 실행");
-        const { data } = await axios.post("/kakaoMap/searchAddress", searchData);
+        const { data } = await axios.post("/api/kakaoMap/searchAddress", searchData);
         // const {documents} = data;
         // console.log(data);
         data.map(element => {
@@ -343,7 +343,7 @@ export default function KakaoMapTest() {
             const selectedDayMarkerData = days[selectedDay]?.markerIds.map(id => markerData[id]);
             const results = await Promise.all(
                 priorities.map(priority => {
-                    return axios.post(`/kakaoMap/search?priority=${priority}`, Object.values(selectedDayMarkerData))
+                    return axios.post(`/api/kakaoMap/search?priority=${priority}`, Object.values(selectedDayMarkerData))
                 })
             );
             const newRoutes = [];
@@ -412,7 +412,7 @@ export default function KakaoMapTest() {
         } else {
             const selectedDayMarkerData = days[selectedDay]?.markerIds.map(id => markerData[id]);
 
-            const { data } = await axios.post("/kakaoMap/searchAll", Object.values(selectedDayMarkerData));
+            const { data } = await axios.post("/api/kakaoMap/searchAll", Object.values(selectedDayMarkerData));
             const { summary, sections } = data.routes[0];
 
             const { priority } = summary;
@@ -480,7 +480,7 @@ export default function KakaoMapTest() {
             //     })
             // );
             // console.log(results);
-            const { data } = await axios.post(`/kakaoMap/searchForWalk?priority=${priorities[0]}`, Object.values(selectedDayMarkerData))
+            const { data } = await axios.post(`/api/kakaoMap/searchForWalk?priority=${priorities[0]}`, Object.values(selectedDayMarkerData))
             const newRoutes = [];
             console.log(data)
 
@@ -531,7 +531,7 @@ export default function KakaoMapTest() {
         } else {
             const selectedDayMarkerData = days[selectedDay]?.markerIds.map(id => markerData[id]);
 
-            const { data } = await axios.post(`/kakaoMap/searchForWalk?priority=${priorities[0]}`, Object.values(selectedDayMarkerData));
+            const { data } = await axios.post(`/api/kakaoMap/searchForWalk?priority=${priorities[0]}`, Object.values(selectedDayMarkerData));
             console.log(data);
             const newRoutes = [];
             // distance 배열의 길이만큼 반복
@@ -611,7 +611,7 @@ export default function KakaoMapTest() {
     }, [selectedDay]);
 
     const sendData = useCallback(async (e) => {
-        const { data } = await axios.post("/kakaoMap/insertData", { data: { days: days, markerData: markerData } })
+        const { data } = await axios.post("/api/kakaoMap/insertData", { data: { days: days, markerData: markerData } })
         console.log(data);
     }, [days, markerData])
 
@@ -659,7 +659,7 @@ export default function KakaoMapTest() {
                         dayKey, // 나중에 업데이트할 때 필요
                         mode,
                         priority,
-                        promise: axios.post(`${baseUrl}?priority=${priority}`, markerValues)
+                        promise: axios.post(`/api${baseUrl}?priority=${priority}`, markerValues)
                     });
                 });
             });

@@ -5,7 +5,7 @@ import { Link, redirect, useNavigate, useParams } from "react-router-dom"
 import { accessTokenState, guestKeyState, loginIdState, loginLevelState } from "../../utils/jotai";
 import { Modal } from "bootstrap";
 import { toast } from "react-toastify";
-import { guestNicknameState } from "../../../../test-kakaopay/src/utils/jotai";
+import { guestNicknameState } from "../../utils/jotai";
 import "./ShareGate.css";
 
 
@@ -56,7 +56,7 @@ const closeModal = useCallback(() => {
   useEffect(() => {
     (async () => {
       try {
-        const { data } = await axios.post("/share/verify", { shareKey });
+        const { data } = await axios.post("/api/share/verify", { shareKey });
         setScheduleNo(data);
         // 여기서 "비회원"을 강제로 박아도 되는데, 회원이면 덮어써질 수 있어서 주의
         // setLoginLevel("비회원");
@@ -68,7 +68,7 @@ const closeModal = useCallback(() => {
 
 
   const auth = useCallback(async () => {
-    const { data } = await axios.post("/share/auth", {}, {
+    const { data } = await axios.post("/api/share/auth", {}, {
       headers: { Authorization: `Bearer ${accessToken}` }
     });
     console.log(data);
@@ -97,7 +97,7 @@ const closeModal = useCallback(() => {
 
 
   const enterGuest = useCallback(async () => {
-    const { data } = await axios.post("/share/enter", { guestNickname: nickname })
+    const { data } = await axios.post("/api/share/enter", { guestNickname: nickname })
     console.log("접속!");
     console.log(data);
     setGuestKey(data.guestKey);
@@ -109,7 +109,7 @@ const closeModal = useCallback(() => {
   }, [nickname, scheduleNo, closeModal, navigate, setGuestKey, setAccessToken, setLoginLevel]);
 
   const checkByNickname = useCallback(async () => {
-    const { data } = await axios.post(`/share/nickname/${nickname}`);
+    const { data } = await axios.post(`/api/share/nickname/${nickname}`);
     setCheckNickname(data);
   }, [nickname]);
 

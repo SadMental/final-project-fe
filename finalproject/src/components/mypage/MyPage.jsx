@@ -84,11 +84,11 @@ export default function MyPage() {
 
     const loadData = useCallback(async () => {
         try {
-            const resp = await axios.get("/account/mypage");
+            const resp = await axios.get("/api/account/mypage");
             setMyinfo(resp.data);
 
             if (resp.data.attachmentNo) {
-                setProfileUrl(`/attachment/download?attachmentNo=${resp.data.attachmentNo}`);
+                setProfileUrl(`/api/attachment/download/${resp.data.attachmentNo}`);
             } else {
                 setProfileUrl("/images/default-profile.jpg");
             }
@@ -108,7 +108,7 @@ export default function MyPage() {
         formData.append("attach", file);
 
         try {
-            const resp = await axios.post("/account/profile", formData);
+            const resp = await axios.post("/api/account/profile", formData);
             if (resp) loadData();
 
             Swal.fire({
@@ -180,7 +180,7 @@ export default function MyPage() {
             const rawPassword = result.value;
 
             try {
-                await axios.post("/account/withdraw", { accountPw: rawPassword });
+                await axios.post("/api/account/withdraw", { accountPw: rawPassword });
 
                 window.sessionStorage.removeItem("accessToken");
                 window.localStorage.removeItem("refreshToken");

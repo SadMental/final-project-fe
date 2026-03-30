@@ -59,7 +59,7 @@ const AccountJoinStep1 = ({ onNext }) => {
         }
 
         try {
-            await axios.post("/cert/sendPhone", null, {
+            await axios.post("/api/cert/sendPhone", null, {
                 params: { phone: cleanPhone }
             });
 
@@ -98,7 +98,7 @@ const AccountJoinStep1 = ({ onNext }) => {
 
         try {
             const cleanPhone = phone.replace(/-/g, "");
-            const response = await axios.post("/cert/check", {
+            const response = await axios.post("/api/cert/check", {
                 certTarget: cleanPhone,
                 certNumber: certNumber
             });

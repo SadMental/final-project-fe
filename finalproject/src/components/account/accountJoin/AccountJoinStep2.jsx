@@ -65,7 +65,7 @@ const AccountJoinStep2 = ({ verifiedPhone }) => {
         const isValid = regex.test(account.accountId);
         if (isValid) {
             try {
-                const { data } = await axios.get(`/account/accountId/${account.accountId}`);
+                const { data } = await axios.get(`/api/account/accountId/${account.accountId}`);
                 if (data === true) {
                     setAccountClass(prev => ({ ...prev, accountId: "is-valid" }));
                 }
@@ -109,7 +109,7 @@ const AccountJoinStep2 = ({ verifiedPhone }) => {
         const isValid = regex.test(account.accountNickname);
         if (isValid === true) {
             try {
-                const { data } = await axios.get(`/account/accountNickname/${account.accountNickname}`);
+                const { data } = await axios.get(`/api/account/accountNickname/${account.accountNickname}`);
                 if (data === true) {
                     setAccountClass(prev => ({ ...prev, accountNickname: "is-valid" }));
                 }
@@ -172,7 +172,7 @@ const AccountJoinStep2 = ({ verifiedPhone }) => {
 
         if (accountValid === false) return;
         try {
-            await axios.post("/account/join", formData);
+            await axios.post("/api/account/join", formData);
             navigate("/account/joinFinish");
         } catch (e) {
             if (e.response && e.response.status === 409) {

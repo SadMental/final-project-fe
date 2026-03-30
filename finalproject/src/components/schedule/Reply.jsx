@@ -7,7 +7,7 @@ import Swal from "sweetalert2";
 import { TiDelete } from "react-icons/ti";
 import { useAtomValue } from "jotai";
 import { accessTokenState, guestKeyState, guestState, loginIdState, loginLevelState } from "../../utils/jotai";
-import { guestNicknameState } from "../../../../test-kakaopay/src/utils/jotai";
+import { guestNicknameState } from "../../utils/jotai";
 
 
 export default function Reply({ reviews = [], memberList = [], loadReviews }) {
@@ -57,7 +57,7 @@ export default function Reply({ reviews = [], memberList = [], loadReviews }) {
             // setReplyList(data);
 
             // 2) 대표 일정의 세부일정 리스트(객체 리스트)
-            const { data: unitData } = await axios.get(`/review/unit/list/${scheduleNo}`);
+            const { data: unitData } = await axios.get(`/api/review/unit/list/${scheduleNo}`);
             console.log("대표일정 세부일정확인=", unitData);
             setShowUnitList(unitData);
             loadReviews();
@@ -72,7 +72,7 @@ export default function Reply({ reviews = [], memberList = [], loadReviews }) {
 
     async function loadReviewUnitList(reviewNo) {
         console.log("숫자" + reviewNo)
-        const { data } = await axios.get(`/review/unit/${reviewNo}`);
+        const { data } = await axios.get(`/api/review/unit/${reviewNo}`);
         console.log("유닛리스트 데이터확인", data);
         setShowReviewUnitList(data); ''
     }
@@ -81,11 +81,11 @@ export default function Reply({ reviews = [], memberList = [], loadReviews }) {
 
 
         try {
-            const { data } = await axios.post("/review/insert",
+            const { data } = await axios.post("/api/review/insert",
                 {
                     scheduleNo: Number(scheduleNo),
                     scheduleUnitList: scheduleUnitList,
-                    reviewType: "댓글",
+                    reviewType: "comment",
                     reviewContent: input,
                 },
                 {
@@ -109,7 +109,7 @@ export default function Reply({ reviews = [], memberList = [], loadReviews }) {
 
     const deleteScheduleUnitNo = useCallback(async (reviewNo, scheduleUnitNo) => {
         try {
-            await axios.delete(`/review/unit/${reviewNo}`, {
+            await axios.delete(`/api/review/unit/${reviewNo}`, {
                 params: { scheduleUnitNo }
             });
             console.log(scheduleUnitNo);
@@ -131,7 +131,7 @@ export default function Reply({ reviews = [], memberList = [], loadReviews }) {
 
     const sendUpdateReply = useCallback(async (reply) => {
 
-        await axios.patch(`/review/${reply.reviewNo}`, {
+        await axios.patch(`/api/review/${reply.reviewNo}`, {
             reviewContent: editReply
         });
         setEditReviewNo(null);
@@ -165,7 +165,7 @@ export default function Reply({ reviews = [], memberList = [], loadReviews }) {
                     title: "삭제 완료!",
                     icon: "success"
                 });
-                await axios.delete(`/review/${reply.reviewNo}`);
+                await axios.delete(`/api/review/${reply.reviewNo}`);
 
             }
             loadData();
@@ -173,6 +173,12 @@ export default function Reply({ reviews = [], memberList = [], loadReviews }) {
         });
 
     }, [])
+
+const formatDate = (t) => {
+  if (!t) return "";
+  const d = new Date(Number(t));
+  return `${d.getFullYear()}.${d.getMonth() + 1}.${d.getDate()}`;
+};
 
     const canEdit = (reply) =>
         // 회원: 로그인한 아이디와 댓글 작성자 accountId 일치
@@ -182,6 +188,7 @@ export default function Reply({ reviews = [], memberList = [], loadReviews }) {
         // 비회원: 닉네임으로 비교
         (reply.reviewWriterType === "GUEST" &&
             reply.reviewWriterNickname?.trim() === guestNickname?.trim());
+
 
 
 
@@ -206,23 +213,27 @@ export default function Reply({ reviews = [], memberList = [], loadReviews }) {
                                     <div className="reply-user-v3">
                                         <div className="reply-avatar-wrap-v3">
                                             <img
-                                                className="reply-avatar-v3"
-                                                src={
-                                                    (reply.attachmentNo ?? reply.attachments?.[0]?.attachmentNo)
-                                                        ? `http://192.168.20.16:8080/attachment/download?attachmentNo=${reply.attachmentNo ?? reply.attachments?.[0]?.attachmentNo}`
-                                                        : profileUrl
-                                                }
-                                                alt=""
+                                            className="reply-avatar-v3"
+                                            src={
+                                                
+                                                reply.reviewWriterType === "GUEST" 
+                                                ? profileUrl 
+                                                : (reply.attachmentNo || reply.profileAttachmentNo || reply.attachments?.[0]?.attachmentNo)
+                                                    ? `/api/attachment/download/${reply.attachmentNo || reply.profileAttachmentNo || reply.attachments?.[0]?.attachmentNo}`
+                                                    : profileUrl
+                                            }
+                                            alt="profile"
+                                            onError={(e) => { e.target.src = profileUrl; }} 
                                             />
                                         </div>
 
                                         <div className="reply-user-meta-v3">
                                             <div className="reply-writer-v3">{reply.reviewWriterNickname}
-                                                {reply.reviewWriterType === "GUEST" && (
-                                                    <span className="small ms-1">(비회원)</span>
+                                                {reply.reviewWriterType?.trim().toUpperCase() === "GUEST" && (
+                                                    <span>(비회원)</span>
                                                 )}
                                             </div>
-                                            <div className="reply-time-v3">{reply.reviewWtime}</div>
+                                            <div className="reply-time-v3">{formatDate(reply.reviewWtime)}</div>
                                         </div>
                                     </div>
 
@@ -249,41 +260,8 @@ export default function Reply({ reviews = [], memberList = [], loadReviews }) {
                                     </div>
                                 </div>
 
-                                {/* 댓글에 포함된 세부일정 태그: "표시만" (선택 state랑 분리)
-                                {editReviewNo !== reply.reviewNo && reply.scheduleUnitNoList?.filter(Boolean).length > 0 && (
-                                    <div className="reply-tags-v3">
-                                        {reply.scheduleUnitNoList
-                                            .filter(Boolean)
-                                            .map((unitNo, index) => (
-                                                <span key={`${reply.reviewNo}-${unitNo}`} className="reply-badge-mint">
-                                                    {index + 1}번 일정 (#{unitNo})
-                                                </span>
-                                            ))}
-                                    </div>
-                                )} */}
-
-
-                                {/* 내용 or 수정모드 (기존 기능 유지) */}
                                 {editReviewNo === reply.reviewNo ? (
                                     <>
-                                        {/* 수정모드: 삭제 pill (기존 기능 유지: deleteScheduleUnitNo + hoverIndex) */}
-                                        <div className="reply-pills-v3 edit">
-                                            {reply.scheduleUnitNoList
-                                                ?.filter((unitNo, index) => unitNo)
-                                                .map((unitNo, index) => (
-                                                    <span
-                                                        key={`${reply.reviewNo}-${unitNo}`}
-                                                        className={`reply-pill-v3 danger ${hoverIndex === index ? "is-hover" : ""
-                                                            }`}
-                                                        onClick={() => deleteScheduleUnitNo(reply.reviewNo, unitNo)}
-                                                        onMouseEnter={() => setHoverIndex(index)}
-                                                        onMouseLeave={() => setHoverIndex(null)}
-                                                    >
-                                                        {index + 1}번 일정 (#{unitNo}) <TiDelete />
-                                                    </span>
-                                                ))}
-                                        </div>
-
                                         <div className="reply-editbox-v3">
                                             <textarea
                                                 className="reply-textarea-v3"

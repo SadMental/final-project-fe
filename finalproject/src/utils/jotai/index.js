@@ -10,6 +10,8 @@ export const loginLevelState = atomWithStorage("loginLevel", "", sessionStorage)
 //회원의 게스트 키
 export const guestKeyState = atomWithStorage("guestKey", "", sessionStorage);
 
+export const guestNicknameState = atomWithStorage("guestNickname", "", sessionStorage);
+
 //accessToken
 export const accessTokenState = atomWithStorage("accessToken", "", sessionStorage);//브라우저를 닫으면 로그인이 풀림
 
@@ -17,6 +19,7 @@ export const accessTokenState = atomWithStorage("accessToken", "", sessionStorag
 export const refreshTokenState = atomWithStorage("refreshToken", "", sessionStorage);
 
 export const messageHistoryState = atomWithStorage("messageHistory", [], sessionStorage);
+
 
 //회원인지 판정
 export const loginState = atom(get => {

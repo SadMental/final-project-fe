@@ -58,7 +58,7 @@ export default function AccountSearch() {
     const sendData = useCallback(async (pageNo = 1) => {
         setLoading(true);
         try {
-            const { data } = await axios.post("/admin/complexSearch", {
+            const { data } = await axios.post("/api/admin/complexSearch", {
                 ...input,
                 page: pageNo
             });
@@ -110,7 +110,7 @@ export default function AccountSearch() {
                     title: "삭제 완료!",
                     icon: "success"
                 });
-                await axios.post("/account/dropAdmin", { 
+                await axios.post("/api/account/dropAdmin", { 
                     accountId: account.accountId 
                 });
                 handleSearch();

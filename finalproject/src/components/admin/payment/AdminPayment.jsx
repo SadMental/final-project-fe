@@ -40,7 +40,7 @@ export default function AdminPayment() {
         setLoading(true);
         try {
             // POST 요청 시 바디에 검색 정보와 페이지 번호 전달
-            const response = await axios.post(`/admin/payment/list`, {
+            const response = await axios.post(`/api/admin/payment/list`, {
                 page: currentPage,
                 column: searchType,      // 검색 종류 (paymentTid 또는 paymentOwner)
                 keyword: searchKeyword   // 검색어

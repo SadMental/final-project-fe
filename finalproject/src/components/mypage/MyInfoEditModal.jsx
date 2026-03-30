@@ -65,7 +65,7 @@ const MyInfoEditModal = ({ isOpen, onClose, type, label, currentValue, onSuccess
             return;
         }
         try {
-            const resp = await axios.get(`/account/accountNickname/${newValue}`);
+            const resp = await axios.get(`/api/account/accountNickname/${newValue}`);
             if (resp.data) {
                 alert('사용 가능한 닉네임입니다.');
                 setIsNickChecked(true);
@@ -101,7 +101,7 @@ const MyInfoEditModal = ({ isOpen, onClose, type, label, currentValue, onSuccess
         }
 
         try {
-            await axios.post("/cert/sendPhone", null, { params: { phone: newValue } });
+            await axios.post("/api/cert/sendPhone", null, { params: { phone: newValue } });
             setIsSent(true); 
             setTimeLeft(180); 
             startTimer();
@@ -120,7 +120,7 @@ const MyInfoEditModal = ({ isOpen, onClose, type, label, currentValue, onSuccess
     const confirmCert = async () => {
         if (!certNumber) return alert("인증번호를 입력해주세요.");
         try {
-            const resp = await axios.post("/cert/check", { certTarget: newValue, certNumber });
+            const resp = await axios.post("/api/cert/check", { certTarget: newValue, certNumber });
             if(resp.data) {
                 setIsVerified(true); 
                 clearInterval(timerRef.current);
@@ -138,7 +138,7 @@ const MyInfoEditModal = ({ isOpen, onClose, type, label, currentValue, onSuccess
     // [최종] 저장 (API 호출 분기 처리)
     // -----------------------------------------------------------
     const handleSave = async () => {
-        let endpoint = "/account/edit";
+        let endpoint = "/api/account/edit";
         let payload = {};
 
         switch (type) {

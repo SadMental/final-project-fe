@@ -70,7 +70,7 @@ const AccountFindPwStep1 = ({ onNext }) => {
             return;
         }
         try {
-            const { data } = await axios.get(`/account/accountId/${accountId}`)
+            const { data } = await axios.get(`/api/account/accountId/${accountId}`)
             if (data === false) {//아이디가 존재
                 setIsChecked(true);
             }
@@ -93,7 +93,7 @@ const AccountFindPwStep1 = ({ onNext }) => {
             return;
         }
 
-        let url = "";
+        let url = "/api";
         let params = { accountId: accountId };
 
         if (contactType === "phone") {//휴대폰 인증
@@ -114,7 +114,7 @@ const AccountFindPwStep1 = ({ onNext }) => {
                 alert("이메일 형식을 정확히 입력해주세요.");
                 return;
             }
-            url = "/cert/sendEmailForFindPw";
+            url = "/api/cert/sendEmailForFindPw";
             params.email = email;
         }
         try {
@@ -143,7 +143,7 @@ const AccountFindPwStep1 = ({ onNext }) => {
             const certTarget = contactType === "phone" ? phone.replace(/-/g, "") : email;
 
             // [1] 인증번호 확인 요청
-            const response = await axios.post("/cert/check", {
+            const response = await axios.post("/api/cert/check", {
                 certTarget: certTarget,
                 certNumber: certNumber
             });

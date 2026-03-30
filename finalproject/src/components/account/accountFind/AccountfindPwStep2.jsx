@@ -58,7 +58,7 @@ const AccountfindPwStep2 = ({ accountId }) => {
             return;
         }
         try {
-            await axios.patch("/account/changePw", {
+            await axios.patch("/api/account/changePw", {
                 accountId: accountId,
                 accountPw: account.accountPw
             });

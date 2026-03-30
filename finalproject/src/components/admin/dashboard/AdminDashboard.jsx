@@ -24,7 +24,7 @@ export default function AdminDashboard() {
         setLoading(true);
         try {
             // 주소 끝에 페이지 번호 전달
-            const { data } = await axios.get(`/admin/account/list/page/${pageNo}`);
+            const { data } = await axios.get(`/api/admin/account/list/page/${pageNo}`);
             setPageData(data);
         } catch (error) {
             toast.error("데이터 로드 실패");

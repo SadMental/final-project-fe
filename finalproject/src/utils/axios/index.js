@@ -31,7 +31,7 @@ axios.interceptors.response.use((response) => {
         const data = error.response?.data;
         if(data?.status === "401" && data?.message === "TOKEN_EXPIRED") {//토큰이 만료된 경우
             const refreshToken = store.get(refreshTokenState);//컴포넌트 외부에서 쓰는 코드
-            const response = await axios.post("/account/refresh", { 
+            const response = await axios.post("/api/account/refresh", { 
                 refreshToken : `Bearer ${refreshToken}` 
             });
             //response안에는 반드시 다시 발급된 accessToken과 refreshToken이 있어야 함

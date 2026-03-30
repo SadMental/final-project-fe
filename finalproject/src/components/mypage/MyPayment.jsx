@@ -47,7 +47,7 @@ export default function MyPayment() {
     const loadData = useCallback(async () => {
         loading.current = true;
         try {
-            const response = await axios.get(`/payment/page/${page}`);
+            const response = await axios.get(`/api/payment/page/${page}`);
             if (page === 1) {
                 setPaymentList(response.data.list);
             } else {

@@ -37,7 +37,7 @@ export default function AdminSchedule() {
     const loadSchedules = useCallback(async () => {
         setLoading(true);
         try {
-            const response = await axios.post("/admin/schedule/list", {
+            const response = await axios.post("/api/admin/schedule/list", {
                 page: currentPage,
                 // 백엔드에서 필터링 파라미터를 명칭에 맞게 조정하세요 (예: keyword, publicType 등)
                 keyword: searchTerm,
@@ -70,7 +70,7 @@ export default function AdminSchedule() {
                     title: "삭제 완료!",
                     icon: "success"
                 });
-                await axios.delete(`/admin/schedule/delete/${scheduleNo}`)
+                await axios.delete(`/api/admin/schedule/delete/${scheduleNo}`)
             }
         });
         setCurrentPage(1);

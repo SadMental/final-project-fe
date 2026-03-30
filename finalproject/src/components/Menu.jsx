@@ -75,7 +75,7 @@ export default function Menu() {
 
     clearLogin();
 
-    await axios.delete("/account/logout");
+    await axios.delete("/api/account/logout");
     delete axios.defaults.headers.common["Authorization"];
     navigate("/");
     closeMenu();

@@ -55,10 +55,10 @@ export default function Home() {
 
     const loadData = async () => {
         try {
-            const scheduleResp = await axios.get("/schedule/");
+            const scheduleResp = await axios.get("/api/schedule");
             setSchedules(scheduleResp.data);
 
-            const tagResp = await axios.get("/schedule/tagList");
+            const tagResp = await axios.get("/api/schedule/tagList");
             setTagList(tagResp.data);
         } catch (e) {
             console.error("데이터 로드 실패", e);
@@ -325,7 +325,7 @@ export default function Home() {
                                                 <img
                                                     src={
                                                         item.scheduleImage
-                                                            ? `/attachment/download/${item.scheduleImage}`
+                                                            ? `/api/attachment/download/${item.scheduleImage}`
                                                             : "/images/default-schedule.png"
                                                     }
                                                     onError={(e) => e.target.src = "/images/default-schedule.png"}

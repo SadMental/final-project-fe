@@ -41,7 +41,7 @@ export default function AccountPayDetail() {
 
     const loadData = useCallback(async () => {
         try {
-            const { data } = await axios.get(`/payment/${paymentNo}`);
+            const { data } = await axios.get(`/api/payment/${paymentNo}`);
             const { paymentDto, paymentDetailList, responseVO } = data;
             setPayment(paymentDto);
             setPaymentDetailList(paymentDetailList);
@@ -65,7 +65,7 @@ export default function AccountPayDetail() {
         if (choice.isConfirmed === false) return;
 
         try {
-            await axios.delete(`/payment/${paymentNo}`);
+            await axios.delete(`/api/payment/${paymentNo}`);
             toast.success("결제가 전체 취소되었습니다.");
             loadData();
         } catch (e) {
@@ -86,7 +86,7 @@ export default function AccountPayDetail() {
         if (choice.isConfirmed === false) return;
 
         try {
-            await axios.delete(`/payment/detail/${paymentDetail.paymentDetailNo}`);
+            await axios.delete(`/api/payment/detail/${paymentDetail.paymentDetailNo}`);
             toast.success("부분 환불이 완료되었습니다.");
             loadData();
         } catch (e) {

@@ -31,17 +31,10 @@ export default function MemberReview({
     instance.hide();
   }, []);
 
-  const prettyTime = useCallback((wtime) => {
-    if (!wtime) return "";
-    const diff = Date.now() - Number(wtime);
-    const min = Math.floor(diff / 60000);
-    if (min < 1) return "방금 전";
-    if (min < 60) return `${min}분 전`;
-    const hour = Math.floor(min / 60);
-    if (hour < 24) return `${hour}시간 전`;
-    const day = Math.floor(hour / 24);
-    return `${day}일 전`;
-  }, []);
+const formatDate = (wtime) => {
+  if (!wtime) return "";
+  return new Date(Number(wtime)).toLocaleDateString();
+};
 
   const avgRating = useMemo(() => {
     if (!reviews?.length) return 0;
@@ -126,14 +119,14 @@ export default function MemberReview({
                     <div className="review-writer-row">
                       <div className="review-writer">
                         {r.reviewWriterNickname ?? "익명"}
-                        {r.isGuest && (
+                        {r.reviewWriterType?.trim().toUpperCase() === "GUEST" && (
                           <span className="review-guest-tag">비회원</span>
                         )}
                       </div>
 
                     </div>
 
-                    <div className="review-time">{prettyTime(r.reviewWtime)}</div>
+                    <div className="review-time">{formatDate(r.reviewWtime)}</div>
                   </div>
                 </div>
 

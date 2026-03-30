@@ -82,7 +82,7 @@ const AccountFindIdStep1 = ({ onNext }) => {
                 alert("이메일 형식을 정확히 입력해주세요.");
                 return;
             }
-            url = "/cert/sendEmailForFind";
+            url = "/api/cert/sendEmailForFind";
             params = { email: email };
         }
 
@@ -118,7 +118,7 @@ const AccountFindIdStep1 = ({ onNext }) => {
             const certTarget = contactType === "phone" ? phone.replace(/-/g, "") : email;
 
             // [1] 인증번호 확인 (await 적용)
-            const response = await axios.post("/cert/check", {
+            const response = await axios.post("/api/cert/check", {
                 certTarget: certTarget,
                 certNumber: certNumber
             });
@@ -136,7 +136,7 @@ const AccountFindIdStep1 = ({ onNext }) => {
 
                 try {
                     // [수정] await 적용 및 API 호출
-                    const idResponse = await axios.post("/account/findId", null, {
+                    const idResponse = await axios.post("/api/account/findId", null, {
                         params: idParams
                     });
 

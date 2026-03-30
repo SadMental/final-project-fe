@@ -46,7 +46,7 @@ export default function ScheduleModal({ isOpen, onClose }) {
 
     const loadTags = async () => {
         try {
-            const { data } = await axios.get("/schedule/tagList");
+            const { data } = await axios.get("/api/schedule/tagList");
             setTags(data);
         } catch (e) {
             console.error("태그 로드 실패", e);
@@ -90,7 +90,7 @@ export default function ScheduleModal({ isOpen, onClose }) {
         }
 
         try {
-            await axios.post("/schedule/insert", formData);
+            await axios.post("/api/schedule/insert", formData);
             alert(`[${formData.get('scheduleName')}] 일정이 등록되었습니다!`);
             console.log("SAVE 데이터 =", formData);
             onClose();

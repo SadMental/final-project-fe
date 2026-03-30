@@ -46,7 +46,7 @@ export default function KakaoPay() {
 
     const loadData = useCallback(async () => {
         try {
-            const { data } = await axios.get("/shop/");
+            const { data } = await axios.get("/api/shop/");
             setShopList(
                 data.map(item => ({
                     ...item,
@@ -97,7 +97,7 @@ export default function KakaoPay() {
             }));
             // console.log(payload)
             console.log(axios.defaults.baseURL);
-            const { data } = await axios.post("/kakaopay/buy", payload);
+            const { data } = await axios.post("/api/kakaopay/buy", payload);
             // PC/Mobile 환경에 따라 리다이렉트 URL 분기 가능하나 여기선 PC URL 사용
             // 모바일이면 data.next_redirect_mobile_url 사용 고려
             const redirectUrl = isMobile && data.next_redirect_mobile_url ? data.next_redirect_mobile_url : data.next_redirect_pc_url;
